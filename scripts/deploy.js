@@ -3,7 +3,7 @@ const hre = require("hardhat");
 async function main() {
 
   const FunToken = await hre.ethers.getContractFactory("FunToken");
-  const funToken = await FunToken.deploy();
+  const funToken = await FunToken.deploy(0);
 
   await funToken.deployed();
 }
