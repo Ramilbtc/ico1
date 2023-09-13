@@ -35,15 +35,107 @@ export const ERC20Provider = ({ children }) => {
 
             const web3modal = Web3Modal();
             const connection = await web3modal.connect();
-            const provider = new
+            const provider = new ethers.providers.Web3Provider(connection);
+            const signer = provider.getSigner();
+            const contract = fetchContractERC20(signer);
+
+            const allTokenHolder = await contract.balanceOf(accounts[0]);
+            setAccountBalance(allTokenHolder.toNumber());
+
+            const totalHolder = await contract._userId();
+            setUserId(totalHolder.toNumber());
+
         } catch (error) {
-            console.log('App is not connected')
+            console.log('не подключается к метамаску')
         }
     }
 
+    const ERC20FunToken = async () => {
+        try {
+            const web3modal = Web3Modal();
+            const connection = await web3modal.connect();
+            const provider = new ethers.providers.Web3Provider(connection);
+            const signer = provider.getSigner("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+            const contract = fetchContractERC20(signer);
+
+            const supply = await contract.totalSupply();
+            const totalSupply = supply.toNumber();
+            setNoOfToken(totalSupply);
+
+            const name = await contract.name();
+            setTokenName(name);
+
+            const symbol = await contract.symbol();
+            setTokenSymbol(symbol);
+
+            const standard = await contract.standard();
+            setTokenStandard(standard);
+
+            const ownerOfContract = await contract.ownerOfContract();
+            setTokenOwner(ownerOfContract);
+
+            const balanceToken = await contract.balanceOf("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+            setTokenOwnerBal(balanceToken);
+
+        } catch (error) {
+            console.log("Косяк с токеном")
+        }
+    }
+
+    const transferToken = async (address, value) => {
+        try {
+            const web3modal = Web3Modal();
+            const connection = await web3modal.connect();
+            const provider = new ethers.providers.Web3Provider(connection);
+            const signer = provider.getSigner();
+            const contract = fetchContractERC20(signer);
+
+            const transfer = await contract.transfer(address, BigInt(value * 1));
+            transfer.wait();
+            window.location.wait();
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const tokenHolderData = async () => {
+        try {
+            const web3modal = Web3Modal();
+            const connection = await web3modal.connect();
+            const provider = new ethers.providers.Web3Provider(connection);
+            const signer = provider.getSigner();
+            const contract = fetchContractERC20(signer);
+
+            const allTokenHolder = await contract.getTokenHolder();
+
+            allTokenHolder.map(async (el) => {
+                const singleHolderData = await contract.getTokenHolderData(el);
+                holderArray.push(singleHolderData);
+                console.log(holderArray)
+            })
+        } catch (error) {
+            console.log("косяк в трансфере токена");
+        }
+    }
 
     return (
-        <ERC20ICOContext.Provider value={{ funToken }}>
+        <ERC20ICOContext.Provider value={{
+            funToken,
+            checkConnection,
+            ERC20FunToken,
+            transferToken,
+            tokenHolderData,
+            account,
+            accountBalance,
+            userId,
+            noOfToken,
+            tokenName,
+            tokenStandard,
+            tokenSymbol,
+            tokenOwner,
+            tokenOwnerBal
+        }}>
             {children}
         </ERC20ICOContext.Provider>
     );
