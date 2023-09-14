@@ -134,7 +134,8 @@ export const ERC20Provider = ({ children }) => {
             tokenStandard,
             tokenSymbol,
             tokenOwner,
-            tokenOwnerBal
+            tokenOwnerBal,
+            holderArray
         }}>
             {children}
         </ERC20ICOContext.Provider>
