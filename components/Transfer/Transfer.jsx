@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Image from "next/image"
 
-import Style from '../styles/index.module.css'
+import Style from '../../styles/index.module.css'
 import funToken from "../../assets/funtoken.png"
 
-const Transfer = (
+const Transfer = ({
     noOfToken,
     tokenName,
     tokenStandard,
@@ -12,7 +12,7 @@ const Transfer = (
     tokenOwner,
     tokenOwnerBal,
     transferToken
-) => {
+}) => {
 
     const [transferAccount, setTransferAccount] = useState('')
     const [tokenNumber, setTokenNumber] = useState(0)
